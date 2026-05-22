@@ -6,11 +6,10 @@
     <title>R+ Proxy Engine</title>
     <style>
         * { box-sizing: border-box; }
-        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; }
         
-        /* Fixed Background Configuration */
         body {
-            background-image: url('fire.jpg'); /* This looks for your uploaded fire.jpg file */
+            background-image: url('fire.jpg'); /* Your custom R+ background image file */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -20,7 +19,6 @@
             background-color: #121212;
         }
 
-        /* Centered Search Engine Box Design */
         .search-container {
             background: rgba(20, 20, 20, 0.85);
             padding: 40px;
@@ -57,11 +55,6 @@
             font-size: 16px;
             outline: none;
         }
-        
-        input:focus {
-            border-color: #ff4500;
-            box-shadow: 0 0 8px rgba(255, 69, 0, 0.6);
-        }
 
         button { 
             padding: 15px 25px; 
@@ -72,12 +65,6 @@
             border-radius: 8px; 
             cursor: pointer; 
             font-size: 16px;
-            transition: 0.2s ease;
-        }
-
-        button:hover { 
-            background: #cc3700; 
-            transform: scale(1.02);
         }
     </style>
 </head>
@@ -85,8 +72,6 @@
 
     <div class="search-container">
         <div class="engine-title">R+</div>
-        
-        <!-- Redirects smoothly to CroxyProxy public home interface -->
         <div class="input-wrapper">
             <input type="text" id="urlInput" placeholder="search with R+" autocomplete="off">
             <button onclick="launchProxy()">Search</button>
@@ -95,29 +80,24 @@
 
     <script>
         function launchProxy() {
-            const inputField = document.getElementById('urlInput');
-            let query = inputField.value.trim();
-            
-            if (!query) return alert('Please enter a website URL or a search query.');
+            const input = document.getElementById('urlInput').value.trim();
+            if (!input) return alert('Please enter a query.');
 
-            // Format plaintext phrases into Google Search syntax
-            if (!query.startsWith('http://') && !query.startsWith('https://')) {
-                if (!query.includes('.') || query.includes(' ')) {
-                    query = 'https://google.com' + encodeURIComponent(query);
+            let url = input;
+            if (!input.startsWith('http://') && !input.startsWith('https://')) {
+                if (input.includes('.') && !input.includes(' ')) {
+                    url = 'https://' + input;
                 } else {
-                    query = 'https://' + query;
+                    url = 'https://google.com' + encodeURIComponent(input);
                 }
             }
 
-            // Encodes the target to pass directly to CroxyProxy's open browser view
-            window.location.href = 'https://croxyproxy.com' + encodeURIComponent(query);
+            // Routes through an open-network proxy gateway node that allows hotlinking
+            window.location.href = 'https://allorigins.win' + encodeURIComponent(url);
         }
 
-        // Listens for the Enter key to submit the search
         document.getElementById('urlInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                launchProxy();
-            }
+            if (e.key === 'Enter') launchProxy();
         });
     </script>
 
