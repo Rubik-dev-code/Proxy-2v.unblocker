@@ -3,65 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download Links</title>
+    <title>My Personal Proxy Engine</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-            background-color: #f4f4f9;
-            color: #333;
-            text-align: center;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-        .btn {
-            display: inline-block;
-            margin: 10px;
-            padding: 12px 24px;
-            background-color: #0070f3;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
-        .btn:hover {
-            background-color: #0051b3;
-        }
-        .btn-32 {
-            background-color: #28a745;
-        }
-        .btn-32:hover {
-            background-color: #218838;
-        }
+        * { box-sizing: border-box; }
+        body, html { margin: 0; padding: 0; height: 100%; font-family: sans-serif; background: #121212; color: #fff; overflow: hidden; }
+        .nav-bar { display: flex; gap: 10px; padding: 10px; background: #1a1a1a; align-items: center; height: 60px; border-bottom: 2px solid #333; }
+        input { flex: 1; padding: 10px; border-radius: 5px; border: 1px solid #444; background: #222; color: #fff; font-size: 16px; }
+        button { padding: 10px 20px; border: none; background: #007bff; color: white; font-weight: bold; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .frame-container { height: calc(100% - 60px); width: 100%; background: #000; }
+        iframe { width: 100%; height: 100%; border: none; background: white; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Welcome</h1>
-        <p>Please select the correct version for your device to download:</p>
-        
-        <!-- Link One: 64-Bit -->
-        <a class="btn" href="https://www.mediafire.com/file/xwro1zt5k7ncrt3/BM-MCPE_ApollonClient_1.26.13_64-Bit.apk/file" target="_blank">
-            Download 64-Bit APK
-        </a>
-
-        <!-- Link Two: 32-Bit -->
-        <a class="btn btn-32" href="https://www.mediafire.com/file/w544ew3kzf9a27l/BM-MCPE_ApollonClient_1.26.13_32-Bit.apk/file" target="_blank">
-            Download 32-Bit APK
-        </a>
+    <div class="nav-bar">
+        <strong style="color:#007bff;">Engine:</strong>
+        <input type="text" id="urlInput" placeholder="Enter URL (e.g., now.gg) or search term here...">
+        <button onclick="launchProxy()">Browse Securely</button>
     </div>
+
+    <div class="frame-container">
+        <iframe id="proxyViewer" src="about:blank"></iframe>
+    </div>
+
+    <script>
+        function launchProxy() {
+            const input = document.getElementById('urlInput').value.trim();
+            const viewer = document.getElementById('proxyViewer');
+            
+            if (!input) return alert('Please enter a target web destination.');
+
+            // Format the string into a valid web address if it isn't one
+            let targetUrl = input;
+            if (!input.startsWith('http://') && !input.startsWith('https://')) {
+                if (input.includes('.') && !input.includes(' ')) {
+                    targetUrl = 'https://' + input;
+                } else {
+                    // Fallback to search engine lookup if it's a raw query text
+                    targetUrl = 'https://google.com' + encodeURIComponent(input);
+                }
+            }
+
+            // Route the request securely utilizing a public CroxyProxy gateway
+            const proxyGateway = 'https://croxyproxy.com';
+            viewer.src = proxyGateway + encodeURIComponent(targetUrl);
+        }
+
+        // Allow executing the proxy request via the Enter key
+        document.getElementById('urlInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') launchProxy();
+        });
+    </script>
 
 </body>
 </html>
