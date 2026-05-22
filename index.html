@@ -6,85 +6,114 @@
     <title>R+ Proxy Engine</title>
     <style>
         * { box-sizing: border-box; }
-        body, html { margin: 0; padding: 0; height: 100%; font-family: sans-serif; overflow: hidden; }
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
-        /* Background fire image styling */
+        /* Fixed Background Configuration */
         body {
-            background-image: url('https://unsplash.com'); /* Replace this link with your own R+ fire image URL */
+            background-image: url('fire.jpg'); /* Automatically targets your uploaded repo image */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #121212;
         }
 
-        .nav-bar { 
-            display: flex; 
-            gap: 10px; 
-            padding: 10px; 
-            background: rgba(26, 26, 26, 0.85); /* Slightly transparent to see background */
-            align-items: center; 
-            height: 60px; 
-            border-bottom: 2px solid #333; 
-            backdrop-filter: blur(5px);
+        /* Centered Search Engine Box Design */
+        .search-container {
+            background: rgba(20, 20, 20, 0.85);
+            padding: 40px;
+            border-radius: 15px;
+            border: 2px solid #ff4500;
+            box-shadow: 0 8px 32px 0 rgba(255, 69, 0, 0.3);
+            backdrop-filter: blur(8px);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .engine-title {
+            font-size: 42px;
+            font-weight: bold;
+            color: #ff4500;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 69, 0, 0.5);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
         }
         
-        input { flex: 1; padding: 10px; border-radius: 5px; border: 1px solid #444; background: #222; color: #fff; font-size: 16px; }
-        button { padding: 10px 20px; border: none; background: #ff4500; color: white; font-weight: bold; border-radius: 5px; cursor: pointer; }
-        button:hover { background: #cc3700; }
+        input { 
+            flex: 1; 
+            padding: 15px; 
+            border-radius: 8px; 
+            border: 1px solid #444; 
+            background: #222; 
+            color: #fff; 
+            font-size: 16px;
+            outline: none;
+        }
         
-        .frame-container { height: calc(100% - 60px); width: 100%; background: transparent; }
-        iframe { width: 100%; height: 100%; border: none; background: white; }
+        input:focus {
+            border-color: #ff4500;
+            box-shadow: 0 0 8px rgba(255, 69, 0, 0.6);
+        }
+
+        button { 
+            padding: 15px 25px; 
+            border: none; 
+            background: #ff4500; 
+            color: white; 
+            font-weight: bold; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 16px;
+            transition: 0.2s ease;
+        }
+
+        button:hover { 
+            background: #cc3700; 
+            transform: scale(1.02);
+        }
     </style>
 </head>
 <body>
 
-    <div class="nav-bar">
-        <strong style="color:#ff4500;">Engine:</strong>
-        <!-- Placeholder text updated to 'search with R+' -->
-        <input type="text" id="urlInput" placeholder="search with R+">
-        <button onclick="launchProxy()">Browse Securely</button>
-    </div>
-
-    <div class="frame-container">
-        <iframe id="proxyViewer" src="about:blank"></iframe>
+    <div class="search-container">
+        <div class="engine-title">R+</div>
+        <div class="input-wrapper">
+            <!-- Custom requested placeholder set below -->
+            <input type="text" id="urlInput" placeholder="search with R+">
+            <button onclick="launchProxy()">Search</button>
+        </div>
     </div>
 
     <script>
         function launchProxy() {
             const input = document.getElementById('urlInput').value.trim();
-            const viewer = document.getElementById('proxyViewer');
-            
-            if (!input) return alert('Please enter a target web destination or search term.');
+            if (!input) return alert('Please enter a website URL or a search query.');
 
             let targetUrl = input;
             
-            // Check if input is a valid URL, otherwise format it as a Google search query
+            // Format input into a proper web link if it isn't one
             if (!input.startsWith('http://') && !input.startsWith('https://')) {
                 if (input.includes('.') && !input.includes(' ')) {
                     targetUrl = 'https://' + input;
                 } else {
-                    // This turns raw text input into an actual search link
                     targetUrl = 'https://google.com' + encodeURIComponent(input);
                 }
             }
 
-            // Fixed the live form submission endpoint for CroxyProxy's service
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = 'https://croxyproxy.com';
-            form.target = 'proxyViewer'; // Force the results to load inside our iframe
-
-            const inputField = document.createElement('input');
-            inputField.type = 'hidden';
-            inputField.name = 'url';
-            inputField.value = targetUrl;
-
-            form.appendChild(inputField);
-            document.body.appendChild(form);
-            form.submit();
-            document.body.removeChild(form);
+            // Redirects to CroxyProxy without triggering the frame security block
+            const secureGateway = 'https://croxyproxy.com';
+            window.location.href = secureGateway + encodeURIComponent(targetUrl);
         }
 
-        // Listens for the Enter key to trigger the search successfully
+        // Trigger search functionality via the Enter key
         document.getElementById('urlInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 launchProxy();
