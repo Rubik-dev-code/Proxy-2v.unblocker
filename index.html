@@ -6,11 +6,11 @@
     <title>R+ Proxy Engine</title>
     <style>
         * { box-sizing: border-box; }
-        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; }
         
-        /* Fixed Background Configuration */
+        /* Your Custom Fire Background */
         body {
-            background-image: url('fire.jpg'); /* Your custom R+ background file */
+            background-image: url('fire.jpg'); 
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -20,7 +20,6 @@
             background-color: #121212;
         }
 
-        /* Centered Search Engine Box Design */
         .search-container {
             background: rgba(20, 20, 20, 0.85);
             padding: 40px;
@@ -72,12 +71,10 @@
             border-radius: 8px; 
             cursor: pointer; 
             font-size: 16px;
-            transition: 0.2s ease;
         }
 
         button:hover { 
             background: #cc3700; 
-            transform: scale(1.02);
         }
     </style>
 </head>
@@ -86,37 +83,30 @@
     <div class="search-container">
         <div class="engine-title">R+</div>
         
-        <div class="input-wrapper">
-            <input type="text" id="urlInput" placeholder="search with R+" autocomplete="off">
-            <button onclick="launchProxy()">Search</button>
-        </div>
+        <!-- This sends the search data directly to CroxyProxy's main public reader link -->
+        <form action="https://croxyproxy.com" method="GET" class="input-wrapper">
+            <input type="text" name="url" id="urlInput" placeholder="search with R+" autocomplete="off">
+            <button type="submit">Search</button>
+        </form>
     </div>
 
     <script>
-        function launchProxy() {
+        document.querySelector('form').addEventListener('submit', function(e) {
             const inputField = document.getElementById('urlInput');
             let query = inputField.value.trim();
             
-            if (!query) return alert('Please enter a website URL or a search query.');
-
-            // Convert plain search phrases to a Google search link format first
-            if (!query.startsWith('http://') && !query.startsWith('https://')) {
-                if (!query.includes('.') || query.includes(' ')) {
-                    query = 'https://google.com' + encodeURIComponent(query);
-                } else {
-                    query = 'https://' + query;
-                }
+            if (!query) {
+                e.preventDefault();
+                return alert('Please enter a website URL or a search query.');
             }
 
-            // Unblocker Engine: Routes the destination URL through Google's proxy format
-            const target = encodeURIComponent(query);
-            window.location.href = 'https://google.com' + target;
-        }
-
-        // Listens for the Enter key to execute search seamlessly
-        document.getElementById('urlInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                launchProxy();
+            // If it is just text, turn it into a Google search link before sending it to the proxy
+            if (!query.startsWith('http://') && !query.startsWith('https://')) {
+                if (!query.includes('.') || query.includes(' ')) {
+                    inputField.value = 'https://google.com' + encodeURIComponent(query);
+                } else {
+                    inputField.value = 'https://' + query;
+                }
             }
         });
     </script>
