@@ -10,7 +10,7 @@
         
         /* Fixed Background Configuration */
         body {
-            background-image: url('fire.jpg'); /* Automatically targets your uploaded repo image */
+            background-image: url('fire.jpg'); /* This looks for your uploaded fire.jpg file */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -34,12 +34,12 @@
         }
 
         .engine-title {
-            font-size: 42px;
+            font-size: 56px;
             font-weight: bold;
             color: #ff4500;
             margin-bottom: 25px;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(255, 69, 0, 0.5);
+            letter-spacing: 3px;
+            text-shadow: 0 0 15px rgba(255, 69, 0, 0.7);
         }
 
         .input-wrapper {
@@ -85,35 +85,35 @@
 
     <div class="search-container">
         <div class="engine-title">R+</div>
+        
+        <!-- Redirects smoothly to CroxyProxy public home interface -->
         <div class="input-wrapper">
-            <!-- Custom requested placeholder set below -->
-            <input type="text" id="urlInput" placeholder="search with R+">
+            <input type="text" id="urlInput" placeholder="search with R+" autocomplete="off">
             <button onclick="launchProxy()">Search</button>
         </div>
     </div>
 
     <script>
         function launchProxy() {
-            const input = document.getElementById('urlInput').value.trim();
-            if (!input) return alert('Please enter a website URL or a search query.');
-
-            let targetUrl = input;
+            const inputField = document.getElementById('urlInput');
+            let query = inputField.value.trim();
             
-            // Format input into a proper web link if it isn't one
-            if (!input.startsWith('http://') && !input.startsWith('https://')) {
-                if (input.includes('.') && !input.includes(' ')) {
-                    targetUrl = 'https://' + input;
+            if (!query) return alert('Please enter a website URL or a search query.');
+
+            // Format plaintext phrases into Google Search syntax
+            if (!query.startsWith('http://') && !query.startsWith('https://')) {
+                if (!query.includes('.') || query.includes(' ')) {
+                    query = 'https://google.com' + encodeURIComponent(query);
                 } else {
-                    targetUrl = 'https://google.com' + encodeURIComponent(input);
+                    query = 'https://' + query;
                 }
             }
 
-            // Redirects to CroxyProxy without triggering the frame security block
-            const secureGateway = 'https://croxyproxy.com';
-            window.location.href = secureGateway + encodeURIComponent(targetUrl);
+            // Encodes the target to pass directly to CroxyProxy's open browser view
+            window.location.href = 'https://croxyproxy.com' + encodeURIComponent(query);
         }
 
-        // Trigger search functionality via the Enter key
+        // Listens for the Enter key to submit the search
         document.getElementById('urlInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 launchProxy();
