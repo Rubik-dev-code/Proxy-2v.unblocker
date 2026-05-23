@@ -81,7 +81,6 @@
     <div class="search-container">
         <div class="engine-title">R+</div>
         <div class="input-wrapper">
-            <!-- Your custom requested placeholder text -->
             <input type="text" id="urlInput" placeholder="search with R+" autocomplete="off">
             <button onclick="launchProxyNode()">Search</button>
         </div>
@@ -94,7 +93,7 @@
 
             let targetUrl = input;
             
-            // Format plain text phrases into standard web search URLs automatically
+            // Format plaintext phrases into Google Search URLs automatically
             if (!input.startsWith('http://') && !input.startsWith('https://')) {
                 if (input.includes('.') && !input.includes(' ')) {
                     targetUrl = 'https://' + input;
@@ -103,11 +102,11 @@
                 }
             }
 
-            // Live, working proxy server link connected to your button
+            // The working live proxy server link is embedded directly below
             const activeServerNode = 'https://ultraviolet.segso.net'; 
             
-            // ANTI-FILTER ENCRYPTION: Encrypts your target text string into safe, unreadable characters (Base64)
-            // This blinds network filters like MyTime so they can't see phrases like "roblox" or "now.gg"
+            // Converts your destination URL into encrypted Base64 characters
+            // This hides phrases like "roblox" or "now.gg" from the MyTime filter completely
             const encodedQuery = btoa(targetUrl);
             
             // Redirects your page securely through the active server node
